@@ -11,7 +11,7 @@ structured with coupled dependencies.
 The second file in this example ([main_di.py](/example_01/main_di.py)) shows how to decouple the dependencies from
 the first example and increment the cohesion preparing our sample application to implement a dependency injector.
 
-## example 02
+## [example 02](/example_02/)
 
 This example shows how to implement a dependency injector.
 
