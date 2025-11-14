@@ -1,36 +1,36 @@
 """
-Example 02 - Implementación con Dependency Injector Framework
+Example 02 - Implementation with Dependency Injector Framework
 
-Este ejemplo muestra cómo usar el framework 'dependency-injector' para
-gestionar automáticamente las dependencias de tu aplicación.
+This example shows how to use the 'dependency-injector' framework to
+automatically manage your application's dependencies.
 
-Conceptos clave demostrados:
+Key concepts demonstrated:
 
-1. Container (Contenedor):
-   - Clase que declara y gestiona todas las dependencias
-   - Centraliza la configuración del grafo de dependencias
-   - Facilita el testing al permitir override de dependencias
+1. Container:
+   - Class that declares and manages all dependencies
+   - Centralizes the dependency graph configuration
+   - Facilitates testing by allowing dependency overrides
 
-2. Providers (Proveedores):
-   - Singleton: Crea UNA ÚNICA instancia compartida (ej: conexiones DB, configs)
-   - Factory: Crea UNA NUEVA instancia cada vez que se solicita (ej: requests)
-   - Configuration: Gestiona configuración desde env vars, archivos, etc.
+2. Providers:
+   - Singleton: Creates ONE SINGLE shared instance (e.g., DB connections, configs)
+   - Factory: Creates A NEW instance each time it's requested (e.g., requests)
+   - Configuration: Manages configuration from env vars, files, etc.
 
-3. Decorador @inject:
-   - Marca funciones que recibirán dependencias automáticamente
-   - Permite inyección automática sin pasar parámetros manualmente
+3. @inject decorator:
+   - Marks functions that will receive dependencies automatically
+   - Allows automatic injection without manually passing parameters
 
-4. Override de dependencias:
-   - Permite reemplazar dependencias reales con mocks para testing
-   - Útil para aislar componentes durante las pruebas
+4. Dependency override:
+   - Allows replacing real dependencies with mocks for testing
+   - Useful for isolating components during tests
 
-Comparado con example_01/main_di.py, este approach:
-- Elimina el código de ensamblaje manual duplicado
-- Centraliza la configuración de dependencias
-- Facilita el testing con overrides
-- Escala mejor en aplicaciones grandes
+Compared to example_01/main_di.py, this approach:
+- Eliminates duplicated manual assembly code
+- Centralizes dependency configuration
+- Facilitates testing with overrides
+- Scales better in large applications
 
-Documentación: https://python-dependency-injector.ets-labs.org/
+Documentation: https://python-dependency-injector.ets-labs.org/
 """
 import os
 from sys import modules
@@ -42,14 +42,14 @@ from dependency_injector.wiring import Provide, inject
 
 class APIClient:
     """
-    Cliente API que requiere configuración externa.
+    API client that requires external configuration.
 
-    Esta es la misma clase de example_01, pero ahora será gestionada
-    por el contenedor de DI en lugar de ensamblarse manualmente.
+    This is the same class from example_01, but now it will be managed
+    by the DI container instead of being manually assembled.
 
     Args:
-        api_key: Clave de API para autenticación
-        timeout: Tiempo de espera en segundos para las peticiones
+        api_key: API key for authentication
+        timeout: Timeout in seconds for requests
     """
 
     def __init__(self, api_key: str, timeout: int) -> None:
@@ -59,10 +59,10 @@ class APIClient:
 
 class Service:
     """
-    Servicio que depende de APIClient.
+    Service that depends on APIClient.
 
     Args:
-        api_client: Cliente API para realizar peticiones
+        api_client: API client for making requests
     """
 
     def __init__(self, api_client: APIClient) -> None:
@@ -71,30 +71,30 @@ class Service:
 
 class Container(containers.DeclarativeContainer):
     """
-    Contenedor de Dependency Injection.
+    Dependency Injection container.
 
-    Este contenedor declara todas las dependencias de la aplicación y cómo
-    deben ser construidas. Define el grafo de dependencias completo.
+    This container declares all application dependencies and how
+    they should be constructed. Defines the complete dependency graph.
 
     Attributes:
-        config: Provider de configuración que lee de variables de entorno
-        api_client: Provider Singleton que crea UNA instancia compartida de APIClient
-        service: Provider Factory que crea NUEVAS instancias de Service cuando se solicita
+        config: Configuration provider that reads from environment variables
+        api_client: Singleton provider that creates ONE shared instance of APIClient
+        service: Factory provider that creates NEW instances of Service when requested
     """
 
-    # Configuration provider: gestiona configuración desde env vars
+    # Configuration provider: manages configuration from env vars
     config = providers.Configuration()
 
-    # Singleton provider: UNA ÚNICA instancia compartida
-    # Útil para recursos costosos como conexiones a DB, configs, clientes HTTP
+    # Singleton provider: ONE SINGLE shared instance
+    # Useful for expensive resources like DB connections, configs, HTTP clients
     api_client = providers.Singleton(
         APIClient,
         api_key=config.api_key,
         timeout=config.timeout
     )
 
-    # Factory provider: NUEVA instancia cada vez
-    # Útil para objetos stateful que no deben compartirse
+    # Factory provider: NEW instance each time
+    # Useful for stateful objects that shouldn't be shared
     service = providers.Factory(
         Service,
         api_client=api_client
@@ -104,35 +104,35 @@ class Container(containers.DeclarativeContainer):
 @inject
 def main(service: Service = Provide[Container.service]) -> None:
     """
-    Función principal con inyección automática de dependencias.
+    Main function with automatic dependency injection.
 
-    El decorador @inject permite que el contenedor inyecte automáticamente
-    la dependencia 'service' sin tener que pasarla manualmente.
+    The @inject decorator allows the container to automatically inject
+    the 'service' dependency without having to pass it manually.
 
     Args:
-        service: Servicio inyectado automáticamente por el contenedor.
-                 Provide[Container.service] indica QUÉ dependencia inyectar.
+        service: Service automatically injected by the container.
+                 Provide[Container.service] indicates WHICH dependency to inject.
     """
     print(type(service))
 
 
 if __name__ == '__main__':
-    # 1. Crear el contenedor
+    # 1. Create the container
     container = Container()
 
-    # 2. Configurar desde variables de entorno
+    # 2. Configure from environment variables
     container.config.api_key.from_env('API_KEY', required=True)
     container.config.timeout.from_env('TIMEOUT', as_=int, default=5)
 
-    # 3. Wire (conectar) el contenedor con este módulo
-    # Esto activa la inyección automática para funciones decoradas con @inject
+    # 3. Wire (connect) the container with this module
+    # This activates automatic injection for functions decorated with @inject
     container.wire(modules=[__name__])
 
-    # 4. Llamar a main() sin pasar parámetros
-    # El decorador @inject inyecta automáticamente la dependencia
+    # 4. Call main() without passing parameters
+    # The @inject decorator automatically injects the dependency
     main()
 
-    # 5. Demostración de override para testing
-    # Reemplaza api_client real con un Mock para testing
+    # 5. Demonstration of override for testing
+    # Replace real api_client with a Mock for testing
     with container.api_client.override(mock.Mock()):
-        main()  # Ahora usa el mock en lugar del APIClient real
+        main()  # Now uses the mock instead of the real APIClient
