@@ -1,32 +1,32 @@
 """
-Example 01 - Código desacoplado preparado para Dependency Injection
+Example 01 - Decoupled code prepared for Dependency Injection
 
-Este ejemplo muestra cómo refactorizar el código de main_before.py para
-prepararlo para Dependency Injection.
+This example shows how to refactor the code from main_before.py to
+prepare it for Dependency Injection.
 
-Mejoras implementadas:
-1. Las clases reciben sus dependencias como parámetros del constructor
-2. No hay creación directa de dependencias dentro de las clases
-3. Las dependencias se ensamblan en un solo lugar (main)
-4. Fácil de testear con mocks
+Improvements implemented:
+1. Classes receive their dependencies as constructor parameters
+2. No direct creation of dependencies within classes
+3. Dependencies are assembled in a single place (main)
+4. Easy to test with mocks
 
-El único problema que queda es que el código de ensamblaje manual (líneas 40-45)
-es propenso a duplicarse y puede volverse complejo en aplicaciones grandes.
-Para resolver esto, se usa un contenedor de DI (ver example_02).
+The only remaining problem is that the manual assembly code (lines 40-45)
+is prone to duplication and can become complex in large applications.
+To solve this, use a DI container (see example_02).
 """
 import os
 
 
 class APIClient:
     """
-    Cliente API desacoplado que recibe su configuración como parámetros.
+    Decoupled API client that receives its configuration as parameters.
 
-    Esta clase ahora sigue el Principio de Inversión de Dependencias (DIP).
-    No depende de detalles de implementación, solo de abstracciones (parámetros).
+    This class now follows the Dependency Inversion Principle (DIP).
+    It doesn't depend on implementation details, only on abstractions (parameters).
 
     Args:
-        api_key: Clave de API para autenticación
-        timeout: Tiempo de espera en segundos para las peticiones
+        api_key: API key for authentication
+        timeout: Timeout in seconds for requests
     """
 
     def __init__(self, api_key: str, timeout: int) -> None:
@@ -36,14 +36,14 @@ class APIClient:
 
 class Service:
     """
-    Servicio desacoplado que recibe APIClient como dependencia.
+    Decoupled service that receives APIClient as a dependency.
 
-    Esta clase ya no crea su propia instancia de APIClient. En su lugar,
-    recibe una instancia a través del constructor (Dependency Injection).
-    Esto permite inyectar mocks para testing.
+    This class no longer creates its own APIClient instance. Instead,
+    it receives an instance through the constructor (Dependency Injection).
+    This allows injecting mocks for testing.
 
     Args:
-        api_client: Cliente API para realizar peticiones
+        api_client: API client for making requests
     """
 
     def __init__(self, api_client: APIClient) -> None:
@@ -52,18 +52,18 @@ class Service:
 
 def main(service: Service) -> None:
     """
-    Función principal que recibe el servicio como parámetro.
+    Main function that receives the service as a parameter.
 
     Args:
-        service: Instancia del servicio a utilizar
+        service: Service instance to use
     """
     print(type(service))
 
 
-# Código de ensamblaje manual de dependencias
-# Este código ensambla todas las dependencias en el orden correcto.
-# Nota: Este código es propenso a duplicarse y puede volverse complejo.
-# Para resolver esto, usa un contenedor de DI (ver example_02/main.py)
+# Manual dependency assembly code
+# This code assembles all dependencies in the correct order.
+# Note: This code is prone to duplication and can become complex.
+# To solve this, use a DI container (see example_02/main.py)
 if __name__ == '__main__':
     main(service=Service(api_client=APIClient(
         api_key=os.getenv('API_KEY'),

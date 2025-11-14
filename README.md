@@ -2,116 +2,116 @@
 
 This repository provides a series of practical examples demonstrating how to implement Dependency Injection (DI) in Python applications.
 
-## ¿Qué es Dependency Injection?
+## What is Dependency Injection?
 
-Dependency Injection es un patrón de diseño que permite desacoplar las dependencias de una aplicación, facilitando el testing, mantenimiento y escalabilidad del código. En lugar de que los componentes creen sus propias dependencias, estas se "inyectan" desde el exterior.
+Dependency Injection is a design pattern that allows decoupling dependencies in an application, facilitating testing, maintenance, and code scalability. Instead of components creating their own dependencies, they are "injected" from outside.
 
-### Beneficios principales
+### Key Benefits
 
-- **Testabilidad**: Facilita el uso de mocks y stubs en pruebas unitarias
-- **Mantenibilidad**: Reduce el acoplamiento entre componentes
-- **Flexibilidad**: Permite intercambiar implementaciones fácilmente
-- **Reutilización**: Los componentes se vuelven más genéricos y reutilizables
+- **Testability**: Facilitates the use of mocks and stubs in unit tests
+- **Maintainability**: Reduces coupling between components
+- **Flexibility**: Allows easy swapping of implementations
+- **Reusability**: Components become more generic and reusable
 
-## Requisitos
+## Requirements
 
-- Python 3.7 o superior
-- pip (gestor de paquetes de Python)
+- Python 3.7 or higher
+- pip (Python package manager)
 
-## Instalación
+## Installation
 
-1. Clonar el repositorio:
+1. Clone the repository:
 ```bash
 git clone <repository-url>
 cd python_di_examples
 ```
 
-2. Instalar las dependencias:
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-## Variables de entorno
+## Environment Variables
 
-Los ejemplos requieren las siguientes variables de entorno:
+The examples require the following environment variables:
 
 ```bash
 export API_KEY="your-api-key-here"
 export TIMEOUT=30
 ```
 
-## Ejemplos
+## Examples
 
 ### [Example 01](example_01/)
 
-Este ejemplo muestra el proceso de desacoplamiento de una aplicación.
+This example demonstrates the process of decoupling an application.
 
-**Archivos:**
-- [`main_before.py`](example_01/main_before.py): Código con dependencias acopladas
-- [`main_di.py`](example_01/main_di.py): Código desacoplado, preparado para DI
+**Files:**
+- [`main_before.py`](example_01/main_before.py): Code with tightly coupled dependencies
+- [`main_di.py`](example_01/main_di.py): Decoupled code, prepared for DI
 
-En el primer archivo ([`main_before.py`](example_01/main_before.py)) puedes ver cómo la aplicación está estructurada con dependencias acopladas, donde cada clase crea directamente sus dependencias.
+In the first file ([`main_before.py`](example_01/main_before.py)) you can see how the application is structured with tightly coupled dependencies, where each class directly creates its own dependencies.
 
-El segundo archivo ([`main_di.py`](example_01/main_di.py)) muestra cómo desacoplar estas dependencias del primer ejemplo e incrementar la cohesión, preparando nuestra aplicación para implementar un inyector de dependencias.
+The second file ([`main_di.py`](example_01/main_di.py)) shows how to decouple these dependencies from the first example and increase cohesion, preparing our application to implement a dependency injector.
 
-**Ejecutar el ejemplo:**
+**Run the example:**
 ```bash
-# Código acoplado
+# Tightly coupled code
 python example_01/main_before.py
 
-# Código desacoplado
+# Decoupled code
 python example_01/main_di.py
 ```
 
 ### [Example 02](example_02/)
 
-Este ejemplo muestra cómo implementar un contenedor de inyección de dependencias usando el framework `dependency-injector`.
+This example demonstrates how to implement a dependency injection container using the `dependency-injector` framework.
 
-**Características demostradas:**
-- Declaración de un contenedor de DI
-- Uso de providers (Singleton vs Factory)
-- Configuración desde variables de entorno
-- Inyección automática con decoradores
-- Override de dependencias para testing
+**Features demonstrated:**
+- Declaration of a DI container
+- Use of providers (Singleton vs Factory)
+- Configuration from environment variables
+- Automatic injection with decorators
+- Dependency override for testing
 
-Primero declaramos un contenedor que proporcionará ayuda con el ensamblaje de objetos a ser inyectados. Este ejemplo también muestra cómo sobrescribir dependencias, útil para reemplazar componentes reales con mocks durante las pruebas.
+First we declare a container that will provide help with the assembly of objects to be injected. This example also shows how to override dependencies, useful for replacing real components with mocks during testing.
 
-**Ejecutar el ejemplo:**
+**Run the example:**
 ```bash
 python example_02/main.py
 ```
 
-## Referencias y recursos
+## References and Resources
 
-### Documentación oficial
-- [dependency-injector Documentation](https://python-dependency-injector.ets-labs.org/) - Documentación completa del framework
-- [dependency-injector Examples](https://python-dependency-injector.ets-labs.org/examples/index.html) - Más ejemplos de uso
+### Official Documentation
+- [dependency-injector Documentation](https://python-dependency-injector.ets-labs.org/) - Complete framework documentation
+- [dependency-injector Examples](https://python-dependency-injector.ets-labs.org/examples/index.html) - More usage examples
 
-### Conceptos relacionados
-- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID) - Principios de diseño orientado a objetos
-- [Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control) - Patrón de diseño relacionado
+### Related Concepts
+- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID) - Object-oriented design principles
+- [Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control) - Related design pattern
 
-### Artículos recomendados
-- [Dependency Injection in Python](https://python-dependency-injector.ets-labs.org/introduction/di_in_python.html) - Introducción a DI en Python
-- [Why Use Dependency Injection](https://python-dependency-injector.ets-labs.org/introduction/why_use_di.html) - Motivación y casos de uso
+### Recommended Articles
+- [Dependency Injection in Python](https://python-dependency-injector.ets-labs.org/introduction/di_in_python.html) - Introduction to DI in Python
+- [Why Use Dependency Injection](https://python-dependency-injector.ets-labs.org/introduction/why_use_di.html) - Motivation and use cases
 
-## Estructura del proyecto
+## Project Structure
 
 ```
 python_di_examples/
-├── example_01/          # Desacoplamiento básico
-│   ├── main_before.py   # Código acoplado
-│   └── main_di.py       # Código desacoplado
+├── example_01/          # Basic decoupling
+│   ├── main_before.py   # Tightly coupled code
+│   └── main_di.py       # Decoupled code
 ├── example_02/          # Dependency Injector framework
-│   └── main.py          # Implementación con contenedor
-├── requirements.txt     # Dependencias del proyecto
-└── README.md           # Este archivo
+│   └── main.py          # Implementation with container
+├── requirements.txt     # Project dependencies
+└── README.md           # This file
 ```
 
-## Contribuciones
+## Contributing
 
-Las contribuciones son bienvenidas. Por favor, abre un issue o pull request para sugerencias o mejoras.
+Contributions are welcome. Please open an issue or pull request for suggestions or improvements.
 
-## Licencia
+## License
 
-Este proyecto es de código abierto y está disponible para propósitos educativos.
+This project is open source and available for educational purposes.

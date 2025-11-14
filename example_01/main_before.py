@@ -1,56 +1,56 @@
 """
-Example 01 - Código con dependencias acopladas
+Example 01 - Code with tightly coupled dependencies
 
-Este ejemplo muestra cómo NO estructurar una aplicación. Aquí cada componente
-está fuertemente acoplado a sus dependencias:
+This example shows how NOT to structure an application. Here each component
+is tightly coupled to its dependencies:
 
-- APIClient está acoplado a las variables de entorno
-- Service está acoplado a la implementación específica de APIClient
-- main() está acoplado a la implementación específica de Service
+- APIClient is coupled to environment variables
+- Service is coupled to the specific APIClient implementation
+- main() is coupled to the specific Service implementation
 
-Problemas de este enfoque:
-1. Difícil de testear (no puedes inyectar mocks)
-2. Difícil de reutilizar componentes en otros contextos
-3. Alto acoplamiento entre componentes
-4. Baja cohesión del código
+Problems with this approach:
+1. Difficult to test (you can't inject mocks)
+2. Difficult to reuse components in other contexts
+3. High coupling between components
+4. Low code cohesion
 
-Compara este código con main_di.py para ver la diferencia.
+Compare this code with main_di.py to see the difference.
 """
 import os
 
 
 class APIClient:
     """
-    Cliente API fuertemente acoplado a las variables de entorno.
+    API client tightly coupled to environment variables.
 
-    Esta clase viola el Principio de Inversión de Dependencias (DIP) porque
-    depende directamente de detalles de implementación (os.getenv).
+    This class violates the Dependency Inversion Principle (DIP) because
+    it depends directly on implementation details (os.getenv).
     """
 
     def __init__(self) -> None:
-        self.api_key = os.getenv('API_KEY')  # Dependencia acoplada
-        self.timeout = int(os.getenv('TIMEOUT'))  # Dependencia acoplada
+        self.api_key = os.getenv('API_KEY')  # Coupled dependency
+        self.timeout = int(os.getenv('TIMEOUT'))  # Coupled dependency
 
 
 class Service:
     """
-    Servicio fuertemente acoplado a APIClient.
+    Service tightly coupled to APIClient.
 
-    Esta clase crea su propia instancia de APIClient, lo que hace imposible
-    inyectar una implementación alternativa o un mock para testing.
+    This class creates its own instance of APIClient, making it impossible
+    to inject an alternative implementation or a mock for testing.
     """
 
     def __init__(self) -> None:
-        self.api_client = APIClient()  # Dependencia acoplada
+        self.api_client = APIClient()  # Coupled dependency
 
 
 def main() -> None:
     """
-    Función principal que crea y usa el servicio.
+    Main function that creates and uses the service.
 
-    También está acoplada porque crea directamente una instancia de Service.
+    It's also coupled because it directly creates a Service instance.
     """
-    service = Service()  # Dependencia acoplada
+    service = Service()  # Coupled dependency
     print(type(service))
 
 
