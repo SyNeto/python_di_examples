@@ -1,0 +1,18 @@
+# Development dependencies for python_di_examples
+#
+# Install with:
+#   pip install -r requirements-dev.txt
+#
+# This includes all production dependencies plus testing tools.
+
+# Production dependencies
+-r requirements.txt
+
+# Testing
+pytest>=8.0.0
+
+# Type checking (optional but recommended)
+mypy>=1.0.0
+
+# Code formatting (optional)
+black>=24.0.0

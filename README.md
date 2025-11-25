@@ -1,21 +1,61 @@
-# Dependency Injection
+# Dependency Injection in Python
 
-This repository provides a series of practical examples demonstrating how to implement Dependency Injection (DI) in Python applications.
+This repository provides practical examples demonstrating how to implement Dependency Injection (DI) in Python applications, progressing from basic concepts to framework-based solutions.
+
+> **Note**: This project was developed with assistance from [Claude Code](https://claude.ai/claude-code). The original concepts and documentation focus came from a human developer, while Claude Code helped improve documentation consistency, add Protocol interfaces, and create comprehensive test examples. We believe in transparency about AI-assisted development.
 
 ## What is Dependency Injection?
 
-Dependency Injection is a design pattern that allows decoupling dependencies in an application, facilitating testing, maintenance, and code scalability. Instead of components creating their own dependencies, they are "injected" from outside.
+Dependency Injection is a design pattern that decouples components from their dependencies. Instead of components creating their own dependencies internally, they receive them from the outside (injection).
 
-### Key Benefits
+### The Problem (Without DI)
 
-- **Testability**: Facilitates the use of mocks and stubs in unit tests
-- **Maintainability**: Reduces coupling between components
-- **Flexibility**: Allows easy swapping of implementations
-- **Reusability**: Components become more generic and reusable
+```python
+class Service:
+    def __init__(self):
+        self.client = APIClient()  # Tightly coupled!
+```
+
+Problems:
+- Cannot test without real APIClient
+- Cannot swap implementations
+- Hidden dependencies
+
+### The Solution (With DI)
+
+```python
+class Service:
+    def __init__(self, client: APIClientProtocol):  # Injected!
+        self.client = client
+```
+
+Benefits:
+- **Testability**: Inject mocks for testing
+- **Flexibility**: Swap implementations easily
+- **Clarity**: Dependencies are explicit
+
+## Key Benefits
+
+| Benefit | Description |
+|---------|-------------|
+| **Testability** | Inject mocks instead of real dependencies |
+| **Maintainability** | Reduced coupling between components |
+| **Flexibility** | Easy to swap implementations |
+| **Reusability** | Components work in different contexts |
+
+## Documentation Standards
+
+This project uses a combination of documentation approaches for maximum clarity:
+
+| Approach | Purpose | Example |
+|----------|---------|---------|
+| **Type Hints** | IDE autocompletion, static analysis | `def get_user(id: int) -> User` |
+| **Google Docstrings** | Human-readable documentation | Args, Returns, Example sections |
+| **Protocols (PEP 544)** | Interface definitions without inheritance | `class APIClientProtocol(Protocol)` |
 
 ## Requirements
 
-- Python 3.7 or higher
+- Python 3.8 or higher (Protocol support)
 - pip (Python package manager)
 
 ## Installation
@@ -26,91 +66,179 @@ git clone <repository-url>
 cd python_di_examples
 ```
 
-2. Install dependencies:
+2. Create and activate virtual environment:
 ```bash
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or
+venv\Scripts\activate  # Windows
+```
+
+3. Install dependencies:
+```bash
+# Production only
 pip install -r requirements.txt
+
+# Development (includes pytest)
+pip install -r requirements-dev.txt
 ```
 
 ## Environment Variables
 
-The examples require the following environment variables:
+Copy the example file and configure:
 
 ```bash
-export API_KEY="your-api-key-here"
+cp .env.example .env
+```
+
+Required variables:
+```bash
+API_KEY=your-api-key-here
+TIMEOUT=30
+```
+
+Or export directly:
+```bash
+export API_KEY="your-api-key"
 export TIMEOUT=30
 ```
 
 ## Examples
 
-### [Example 01](example_01/)
+### [Example 01](example_01/) - Fundamentals
 
-This example demonstrates the process of decoupling an application.
+Demonstrates the journey from tightly coupled code to properly decoupled code.
 
-**Files:**
-- [`main_before.py`](example_01/main_before.py): Code with tightly coupled dependencies
-- [`main_di.py`](example_01/main_di.py): Decoupled code, prepared for DI
+| File | Description |
+|------|-------------|
+| [`main_before.py`](example_01/main_before.py) | Anti-pattern: tightly coupled dependencies |
+| [`main_di.py`](example_01/main_di.py) | Solution: manual dependency injection |
 
-In the first file ([`main_before.py`](example_01/main_before.py)) you can see how the application is structured with tightly coupled dependencies, where each class directly creates its own dependencies.
-
-The second file ([`main_di.py`](example_01/main_di.py)) shows how to decouple these dependencies from the first example and increase cohesion, preparing our application to implement a dependency injector.
-
-**Run the example:**
+**Run:**
 ```bash
-# Tightly coupled code
-python example_01/main_before.py
-
-# Decoupled code
-python example_01/main_di.py
+python example_01/main_before.py  # See the problem
+python example_01/main_di.py      # See the solution
 ```
 
-### [Example 02](example_02/)
+**Key learning**: Understand WHY DI matters before using frameworks.
 
-This example demonstrates how to implement a dependency injection container using the `dependency-injector` framework.
+---
+
+### [Example 02](example_02/) - Framework DI
+
+Introduces the `dependency-injector` framework to solve manual assembly limitations.
 
 **Features demonstrated:**
-- Declaration of a DI container
-- Use of providers (Singleton vs Factory)
+- Container pattern for dependency management
+- Providers: Singleton vs Factory
 - Configuration from environment variables
-- Automatic injection with decorators
-- Dependency override for testing
+- Automatic injection with `@inject` decorator
+- Override for testing
 
-First we declare a container that will provide help with the assembly of objects to be injected. This example also shows how to override dependencies, useful for replacing real components with mocks during testing.
-
-**Run the example:**
+**Run:**
 ```bash
 python example_02/main.py
 ```
 
-## References and Resources
+**Key learning**: Frameworks reduce boilerplate and add lifecycle management.
 
-### Official Documentation
-- [dependency-injector Documentation](https://python-dependency-injector.ets-labs.org/) - Complete framework documentation
-- [dependency-injector Examples](https://python-dependency-injector.ets-labs.org/examples/index.html) - More usage examples
+---
 
-### Related Concepts
-- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID) - Object-oriented design principles
-- [Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control) - Related design pattern
+### [Example 03](example_03/) - Testing with DI
 
-### Recommended Articles
-- [Dependency Injection in Python](https://python-dependency-injector.ets-labs.org/introduction/di_in_python.html) - Introduction to DI in Python
-- [Why Use Dependency Injection](https://python-dependency-injector.ets-labs.org/introduction/why_use_di.html) - Motivation and use cases
+Shows the PRIMARY benefit of DI: testability with mocks.
+
+| File | Description |
+|------|-------------|
+| [`main.py`](example_03/main.py) | Testable implementation with UserService |
+| [`test_main.py`](example_03/test_main.py) | pytest tests demonstrating mock injection |
+
+**Run:**
+```bash
+python example_03/main.py                    # Run the example
+pytest example_03/test_main.py -v            # Run tests
+```
+
+**Key learning**: DI enables isolated, fast, reliable tests.
+
+---
+
+### [Interfaces](interfaces/) - Protocol Definitions
+
+Shared Protocol definitions used across all examples.
+
+```python
+from interfaces import APIClientProtocol, ServiceProtocol
+```
+
+**Key learning**: Protocols enable duck typing with type safety.
 
 ## Project Structure
 
 ```
 python_di_examples/
-├── example_01/          # Basic decoupling
-│   ├── main_before.py   # Tightly coupled code
-│   └── main_di.py       # Decoupled code
-├── example_02/          # Dependency Injector framework
-│   └── main.py          # Implementation with container
-├── requirements.txt     # Project dependencies
-└── README.md           # This file
+├── interfaces/              # Protocol definitions (contracts)
+│   ├── __init__.py
+│   └── protocols.py         # APIClientProtocol, ServiceProtocol
+├── example_01/              # Fundamentals: coupling vs decoupling
+│   ├── __init__.py
+│   ├── main_before.py       # Anti-pattern (tightly coupled)
+│   └── main_di.py           # Solution (manual DI)
+├── example_02/              # Framework: dependency-injector
+│   ├── __init__.py
+│   └── main.py              # Container, providers, wiring
+├── example_03/              # Testing: mocks with DI
+│   ├── __init__.py
+│   ├── main.py              # Testable implementation
+│   └── test_main.py         # pytest examples
+├── .env.example             # Environment template
+├── .python-version          # Python 3.8+
+├── requirements.txt         # Production dependencies
+├── requirements-dev.txt     # Development dependencies
+└── README.md                # This file
 ```
+
+## Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run with verbose output
+pytest -v
+
+# Run specific example tests
+pytest example_03/test_main.py -v
+
+# Run with coverage (if installed)
+pytest --cov=. --cov-report=html
+```
+
+## References and Resources
+
+### Official Documentation
+- [dependency-injector Documentation](https://python-dependency-injector.ets-labs.org/)
+- [dependency-injector Examples](https://python-dependency-injector.ets-labs.org/examples/index.html)
+- [PEP 544 - Protocols](https://peps.python.org/pep-0544/)
+
+### Related Concepts
+- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
+- [Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control)
+- [Dependency Inversion Principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle)
+
+### Recommended Articles
+- [Dependency Injection in Python](https://python-dependency-injector.ets-labs.org/introduction/di_in_python.html)
+- [Why Use Dependency Injection](https://python-dependency-injector.ets-labs.org/introduction/why_use_di.html)
 
 ## Contributing
 
-Contributions are welcome. Please open an issue or pull request for suggestions or improvements.
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Follow the documentation standards (Type Hints + Google Docstrings + Protocols)
+4. Add tests for new functionality
+5. Submit a pull request
 
 ## License
 
